@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: navy;
+  color: white;
+}
+
+h1 {
+  font-family: 'Lobster', "Open Sans";
+}
+
+h1, h2 {
+  text-transform: capitalize;
+  text-align: center;
+}
+
+#container {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  
+}
+
+
+.btn {
+  outline: none;
+  border-style: solid;
+  width: 100px;
+  padding: 10px;
+  font-weight: 700;
+  border-color: rgb(239, 239, 239);
+  margin-left: auto;
+}
+
+
+input[type='radio'] {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
