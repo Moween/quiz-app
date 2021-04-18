@@ -1,8 +1,18 @@
 //Variables
+
+let h2 = document.createElement('h2'); 
+h2.id = 'headingTwo';
+container.append(h2);
+
+
+let div = document.createElement('div');
+div.id = 'quesContainer'; 
+container.append(div);
+
+let quesContainer;
+let quesContainer_status;
 let score = 0;
 let pos = 0;
-let quesContainer; 
-let quesContainer_status; 
 let question; 
 let options; 
 let option1; 
@@ -10,6 +20,7 @@ let option2;
 let option3; 
 let prevBtn;
 let nextBtn;
+let selectedItem;
 
 
 
@@ -63,21 +74,25 @@ let showQuestion = () => {
       Average: 50,
       Poor: 25,
       Failed: 0
-      };
+    };
       
 
     let teachersRemark;
     for (const remark in scoreBoard) {
       if(score === scoreBoard[remark]) {
-        teachersRemark =  remark;
-  
+        teachersRemark =  remark;  
       }
       
     }
     
-    quesContainer.innerHTML = '<h3> Your score is ' + score + '.  '+ teachersRemark + ' performance.' + ' </h3>';
+    quesContainer.innerHTML = '<h3> Test result is ' + score + '%.'  +
+    '<p>' + teachersRemark +'!</p>' + '</h3>';
+    if(score === 0) {
+      let pattern = /%/g;
+      quesContainer.innerHTML = quesContainer.innerHTML.replace(pattern, '');
+    }
     
-    getElement('quesContainer_status').innerHTML = 'Test completed';
+    getElement('headingTwo').innerHTML = 'Test completed';
     
     // reset the variable to enable to quiz restart.
     pos = 0;
@@ -92,7 +107,7 @@ let showQuestion = () => {
     return false;
   }
   
-  getElement('quesContainer_status').innerHTML = 'Question ' + (pos+1)+ ' of ' + questions.length;
+  getElement('headingTwo').innerHTML = 'question ' + (pos+1)+ ' of ' + questions.length;
   question = questions[pos].question;
   option1 = questions[pos].a;
   option2 = questions[pos].b;
@@ -115,16 +130,36 @@ let displayQuestion = () => {
   createButton();
   
   nextBtn.addEventListener('click', checkAnswer);
+
+  if(pos >= 1) {
+    prevBtn = document.createElement('button');
+    prevBtn.className = 'btn'
+    prevBtn.className.add = 'prevBtn' 
+    quesContainer.insertBefore(prevBtn, nextBtn);
+    prevBtn.textContent = 'Prev';
+    prevBtn.style.marginRight = '10px';
+    prevBtn.addEventListener('click', () => {
+      pos = pos - 1;
+      score = score - 25;
+      showQuestion();
+    })
+  }
+
+  if(pos === 3) {
+    prevBtn.style.visibility = 'none';
+    nextBtn.textContent = 'Submit';
+  }
+
 }
 
 
 //create button  
-
 let createButton = () => {
   //Create a next button
   nextBtn = document.createElement('button');   
   quesContainer.append(nextBtn);
-  nextBtn.textContent = "Next";  
+  nextBtn.textContent = "Next"; 
+  nextBtn.className ='btn' 
   nextBtn.disabled = true;
   
   let options = document.getElementsByName('options');
@@ -155,6 +190,7 @@ let checkAnswer = () => {
   if(options == questions[pos].answer){
     //each time there is a correct answer this value increases
     score+= 25;
+    
   }
   // changes position of which character user is on
   pos++;
@@ -166,7 +202,7 @@ let checkAnswer = () => {
 
 // Reload Quiz
 let reloadQuiz = () => {
-  location.reload()
+  location.reload();
 }
 
 
