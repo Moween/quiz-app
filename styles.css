@@ -32,6 +32,7 @@ h1, h2 {
   width: 100px;
   padding: 10px;
   font-weight: 700;
+  background-color: white;
   border-color: rgb(239, 239, 239);
   margin-left: auto;
 }
