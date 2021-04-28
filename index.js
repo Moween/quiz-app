@@ -20,7 +20,6 @@ let option2;
 let option3; 
 let prevBtn;
 let nextBtn;
-let selectedItem;
 
 
 
@@ -86,9 +85,9 @@ let showQuestion = () => {
     }
     
     quesContainer.innerHTML = '<h3> Test result is ' + score + '%.'  +
-    '<p>' + teachersRemark +'!</p>' + '</h3>';
+    '<p>' + teachersRemark +' performance!</p>' + '</h3>';
     if(score === 0) {
-      let pattern = /%/g;
+      let pattern = /(performance|%)/g;
       quesContainer.innerHTML = quesContainer.innerHTML.replace(pattern, '');
     }
     
@@ -113,6 +112,8 @@ let showQuestion = () => {
   option2 = questions[pos].b;
   option3 = questions[pos].c;  
   displayQuestion();
+  checkSelectedOption()
+
 } 
 
 
@@ -120,11 +121,14 @@ let showQuestion = () => {
 let displayQuestion = () => {
   quesContainer.innerHTML = '<h3>' + question + '</h3>';
   
+  //Check for previous answer
+  const prevAns = getPrevAns(pos + 1)
+
   // display the answer options
   // the += appends to the data we started on the line above
-  quesContainer.innerHTML += "<label> <input type='radio' name='options' value='A'> "+ option1 +"</label><br>";
-  quesContainer.innerHTML += "<label> <input type='radio' name='options' value='B'> "+ option2 +"</label><br>";
-  quesContainer.innerHTML += "<label> <input type='radio' name='options' value='C'> "+ option3 +"</label><br><br>";
+  quesContainer.innerHTML += `<label> <input type='radio' name='options' value='A' ${prevAns === 'A' && "checked"}> ${option1} </label><br>`;
+  quesContainer.innerHTML += `<label> <input type='radio' name='options' value='B' ${prevAns === 'B' && "checked"}> ${option2} </label><br>`;
+  quesContainer.innerHTML += `<label> <input type='radio' name='options' value='C' ${prevAns === 'C' && "checked"}> ${option3} </label><br><br>`;
   
   //invoke the create button function
   createButton();
@@ -139,17 +143,17 @@ let displayQuestion = () => {
     prevBtn.textContent = 'Prev';
     prevBtn.style.marginRight = '10px';
     prevBtn.addEventListener('click', () => {
-      pos = pos - 1;
+      pos = pos - 1;      
       score = score - 25;
       showQuestion();
+      
     })
   }
 
   if(pos === 3) {
     prevBtn.style.visibility = 'none';
     nextBtn.textContent = 'Submit';
-  }
-
+  }  
 }
 
 
@@ -165,7 +169,6 @@ let createButton = () => {
   let options = document.getElementsByName('options');
   
   for(var i = 0; i < options.length; i++) {
-    
     if(options[i].addEventListener('change', () => { 
       nextBtn.disabled = false; 
     }));
@@ -182,7 +185,9 @@ let checkAnswer = () => {
   
   for(var i = 0; i < options.length; i++){
     if(options[i].checked){
-      options = options[i].value;
+      const answer = options[i].value;
+      sessionStorage.setItem(`question ${pos + 1}`, answer);
+      const lastAnswer = sessionStorage.getItem(`question ${pos + 1}`)
     }
     
   }
@@ -199,10 +204,28 @@ let checkAnswer = () => {
   
 }
 
+//check selected radio button
+const checkSelectedOption = () => {
+  const options = Array.from(document.getElementsByName('options'));
+  const isChecked = options.some(input => {
+    return input.checked
+  })
+  if(isChecked) {
+    nextBtn.disabled = false;
+  }
+}
+
+//Check for answer on previous question
+const getPrevAns = (questionNumber) => {
+  return sessionStorage.getItem(`question ${questionNumber}`)
+}
+
 
 // Reload Quiz
 let reloadQuiz = () => {
+  sessionStorage.clear()
   location.reload();
+
 }
 
 
